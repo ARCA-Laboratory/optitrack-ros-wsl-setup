@@ -97,6 +97,25 @@ When using WSL, do **not** use `127.0.0.1` for the VRPN server address. The IP `
    rostopic echo /vrpn/TestBody/pose
    ```
 
+
+5. **Visualize the Pose Data in RViz**:
+
+   Open RViz by running:
+   ```
+    rviz
+   ```
+   In RViz, follow these steps:
+
+   1. Click the **"Add"** button in the lower-left corner.
+   2. Select **"By Topic"** from the list.
+   3. Expand the `/vrpn` topic and select the **"Pose"** option under your tracked object (e.g., `/vrpn/TestBody/pose`).
+   4. RViz will now display the tracked pose of the object in real-time.
+
+   Adjust Visualization (Optional):
+
+   - You can customize the display by adjusting the pose markers (e.g., setting up arrows, axes, or shapes).
+   - Ensure that you have the **TF** (transform frames) visualization active if needed, to help understand the frame transformations.
+
 ### 6. Optional: Install VRPN for Testing (Optional)
 
 If you want to test VRPN connections outside of ROS, you can install VRPN from source to use tools like `vrpn_print_devices` to check if the connection to the VRPN server is working. This step is **optional** and not required for normal ROS operations.
