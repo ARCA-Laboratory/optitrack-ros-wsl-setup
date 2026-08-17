@@ -48,7 +48,7 @@
    ipconfig
    ```
 
-   Find the **IPv4 Address** of the active network adapter used to connect to the network. For example:
+   Find the **IPv4 Address** of the active network adapter used for the OptiTrack/ROS network. For example:
 
    ```
    IPv4 Address. . . . . . . . . . . : 10.8.2.67
@@ -71,11 +71,14 @@
    **Important:** The Windows IP may change. If the connection stops working, run `ipconfig` again and verify that the IP in the launch file is still correct.
 
 4. **Edit Trackers**:
-   Ensure the `trackers` section matches your rigid body name(s) in Motive:
+
+   In the examples below, `TestBody` is used as the example rigid body name. **Replace `TestBody` with the name of your rigid body in Motive.**
+
+   Ensure the `trackers` section matches the rigid body name in Motive:
 
    ```yaml
    trackers:
-     - mobico1
+     - TestBody  # Replace TestBody with the rigid body name defined in Motive
    ```
 
 5. **Build and Source the Workspace**:
@@ -110,14 +113,14 @@ When using WSL, do **not** use `127.0.0.1` for the VRPN server address. The IP `
    You should see a topic like:
 
    ```
-   /vrpn_client_node/mobico1/pose
+   /vrpn_client_node/TestBody/pose
    ```
 
 4. **Inspect the Pose Data**:
    You can inspect the pose data of your tracked body in ROS:
 
    ```
-   rostopic echo /vrpn_client_node/mobico1/pose
+   rostopic echo /vrpn_client_node/TestBody/pose
    ```
 
 5. **Visualize the Pose Data in RViz**:
@@ -136,7 +139,7 @@ When using WSL, do **not** use `127.0.0.1` for the VRPN server address. The IP `
    4. Set the topic to:
 
       ```
-      /vrpn_client_node/mobico1/pose
+      /vrpn_client_node/TestBody/pose
       ```
 
    RViz will now display the current tracked pose of the object in real time.
@@ -152,7 +155,7 @@ When using WSL, do **not** use `127.0.0.1` for the VRPN server address. The IP `
    from nav_msgs.msg import Path
 
    rospy.init_node('pose_to_path')
-   pub = rospy.Publisher('/mobico1/path', Path, queue_size=1)
+   pub = rospy.Publisher('/TestBody/path', Path, queue_size=1)
    path = Path()
 
    def cb(msg):
@@ -160,7 +163,7 @@ When using WSL, do **not** use `127.0.0.1` for the VRPN server address. The IP `
        path.poses.append(msg)
        pub.publish(path)
 
-   rospy.Subscriber('/vrpn_client_node/mobico1/pose', PoseStamped, cb)
+   rospy.Subscriber('/vrpn_client_node/TestBody/pose', PoseStamped, cb)
    rospy.spin()
    PY
    ```
@@ -171,14 +174,14 @@ When using WSL, do **not** use `127.0.0.1` for the VRPN server address. The IP `
    2. Set the topic to:
 
       ```
-      /mobico1/path
+      /TestBody/path
       ```
 
    RViz will now display the accumulated OptiTrack trajectory. To clear the path, stop the Python command with `Ctrl+C` and run it again.
 
 ### 6. Optional: Install VRPN for Testing
 
-If you want to test VRPN connections outside of ROS, you can install VRPN from source to use tools like `vrpn_print_devices`. This step is **optional** and not required for normal ROS operations.
+If you want to test VRPN connections outside of ROS, you can install VRPN from source to use tools like `vrpn_print_devices` to check if the connection to the VRPN server is working. This step is **optional** and not required for normal ROS operations.
 
 #### Steps for Installing VRPN for Testing:
 
@@ -203,23 +206,17 @@ If you want to test VRPN connections outside of ROS, you can install VRPN from s
    Use the rigid body name, Windows IP, and VRPN port:
 
    ```
-   vrpn_print_devices mobico1@<Your_Windows_IP>:3883
+   vrpn_print_devices TestBody@<Your_Windows_IP>:3883
    ```
 
-   For example:
-
-   ```
-   vrpn_print_devices mobico1@10.8.2.67:3883
-   ```
-
-   If the connection is working, the tracker data should continuously update.
+   If the connection is working, tracker data should continuously appear.
 
 ## Troubleshooting
 
 * **Connection Issues**: Ensure that Motive and ROS can communicate over the same network. Run `ipconfig` on Windows and verify that the current IPv4 address matches the `server` address in the ROS launch file.
 * **Only `/rosout` and `/rosout_agg` appear**: The VRPN node may be running but not receiving tracker data. Check the Windows IP and test the connection with `vrpn_print_devices`.
 * **Firewall**: Double-check firewall rules to ensure no traffic is blocked between WSL and Windows.
-* **Tracker Name**: Make sure the tracker name in the launch file exactly matches the rigid body name in Motive.
+* **Tracker Name**: Make sure `TestBody` is replaced with the exact rigid body name defined in Motive.
 * **Network Configuration**: When using WSL, use the Windows network IP rather than `127.0.0.1` or the WSL virtual adapter IP.
 
 With these steps, your setup should successfully stream OptiTrack motion capture data into ROS and allow both live pose and trajectory visualization in RViz.
