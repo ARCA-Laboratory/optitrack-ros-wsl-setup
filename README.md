@@ -19,6 +19,8 @@
 
 ### 2. Configure Motive (on Windows)
 
+If you have not yet created or configured a rigid body in Motive, see the official [OptiTrack - Rigid Body Tracking](https://docs.optitrack.com/motive/rigid-body-tracking) guide.
+
 1. **Enable VRPN Streaming**:
 
    * Open OptiTrack Motive on your Windows machine.
